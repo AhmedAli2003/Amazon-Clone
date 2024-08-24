@@ -2,14 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../../../app/common/functions/validators.dart';
 import '../../../app/common/widgets/custom_text_form_field.dart';
-import '../../../app/common/widgets/expanded_section.dart';
+import '../../../app/constants/app_assets.dart';
 import '../../../app/theme/app_colors.dart';
 import '../widgets/password_text_form_field.dart';
-
-enum _AuthState {
-  signIn,
-  signUp,
-}
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -19,8 +14,6 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
-  _AuthState authState = _AuthState.signIn;
-
   final signUpFormKey = GlobalKey<FormState>();
   final signInFormKey = GlobalKey<FormState>();
 
@@ -32,6 +25,9 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
   late final FocusNode emailFocusNode;
   late final FocusNode passwordFocusNode;
 
+  late final PageController pageController;
+  double progress = 0;
+
   @override
   void initState() {
     super.initState();
@@ -42,6 +38,13 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
     nameFocusNode = FocusNode();
     emailFocusNode = FocusNode();
     passwordFocusNode = FocusNode();
+
+    pageController = PageController()
+      ..addListener(() {
+        setState(() {
+          progress = pageController.page ?? 0;
+        });
+      });
   }
 
   @override
@@ -53,13 +56,15 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
     nameFocusNode.dispose();
     emailFocusNode.dispose();
     passwordFocusNode.dispose();
+
+    pageController.dispose();
     super.dispose();
   }
 
   bool clickedOnce = true;
 
   void onChange(String? _) {
-    if (authState == _AuthState.signIn) {
+    if (progress == 0) {
       signInFormKey.currentState?.validate();
     } else {
       signUpFormKey.currentState?.validate();
@@ -71,174 +76,206 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
     return Scaffold(
       backgroundColor: AppColors.greyBackgroundColor,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: SingleChildScrollView(
-            child: Column(
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Column(
+                children: [
+                  Image.asset(
+                    AppAssets.logo,
+                    height: 180,
+                    width: double.infinity,
+                  ),
+                  const Text(
+                    'Welcome to ShopEase! Find everything you need, all in one place. From the latest tech gadgets to everyday essentials.',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 18,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+            Column(
               children: [
-                const Text(
-                  'Welcome',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                RadioListTile.adaptive(
-                  value: _AuthState.signUp,
-                  groupValue: authState,
-                  title: const Text(
-                    'Create Account',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
+                const Spacer(),
+                Container(
+                  height: 300 + progress * 70,
+                  padding: const EdgeInsets.all(16),
+                  decoration: const BoxDecoration(
+                    color: AppColors.backgroundColor,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(32),
+                      topRight: Radius.circular(32),
                     ),
                   ),
-                  onChanged: (val) => setState(() => authState = val ?? authState),
-                ),
-                ExpandedSection(
-                  expand: authState == _AuthState.signUp,
-                  axisAlignment: -1,
-                  child: Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: const BoxDecoration(
-                      color: AppColors.backgroundColor,
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                    ),
-                    child: Form(
-                      key: signUpFormKey,
-                      child: Column(
-                        children: [
-                          CustomTextFormField(
-                            controller: nameController,
-                            focusNode: nameFocusNode,
-                            labelText: 'Username',
-                            hintText: 'Enter your name...',
-                            prefexIcon: const Icon(Icons.person_rounded),
-                            validator: validateUsername,
-                            onChanged: clickedOnce ? null : onChange,
-                          ),
-                          const SizedBox(height: 12),
-                          CustomTextFormField(
-                            controller: emailController,
-                            focusNode: emailFocusNode,
-                            labelText: 'Email',
-                            hintText: 'Enter your email...',
-                            prefexIcon: const Icon(Icons.email_rounded),
-                            validator: validateEmail,
-                            onChanged: clickedOnce ? null : onChange,
-                          ),
-                          const SizedBox(height: 12),
-                          PasswordTextFormField(
-                            controller: passwordController,
-                            focusNode: passwordFocusNode,
-                            validator: validatePassword,
-                            onChanged: clickedOnce ? null : onChange,
-                          ),
-                          const SizedBox(height: 12),
-                          InkWell(
-                            onTap: () {
-                              if (signUpFormKey.currentState?.validate() ?? false) {
-                              } else {}
-                              setState(() => clickedOnce = false);
-                            },
-                            borderRadius: const BorderRadius.all(Radius.circular(8)),
-                            child: Container(
-                              width: double.infinity,
-                              height: 48,
-                              alignment: Alignment.center,
-                              decoration: const BoxDecoration(
-                                color: AppColors.primaryColor,
-                                borderRadius: BorderRadius.all(Radius.circular(8)),
-                              ),
-                              child: const Text(
-                                'Sign Up',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.backgroundColor,
+                  child: PageView(
+                    controller: pageController,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Form(
+                          key: signInFormKey,
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                const Text(
+                                  'SIGN IN',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 2,
+                                  ),
                                 ),
-                              ),
+                                const SizedBox(height: 12),
+                                CustomTextFormField(
+                                  controller: emailController,
+                                  focusNode: emailFocusNode,
+                                  labelText: 'Email',
+                                  hintText: 'Enter your email...',
+                                  prefexIcon: const Icon(Icons.email_rounded),
+                                  validator: validateEmail,
+                                  onChanged: clickedOnce ? null : onChange,
+                                ),
+                                const SizedBox(height: 12),
+                                PasswordTextFormField(
+                                  controller: passwordController,
+                                  focusNode: passwordFocusNode,
+                                  validator: validatePassword,
+                                  onChanged: clickedOnce ? null : onChange,
+                                ),
+                                const SizedBox(height: 12),
+                                InkWell(
+                                  onTap: () {
+                                    if (signInFormKey.currentState?.validate() ?? false) {
+                                    } else {}
+                                    setState(() => clickedOnce = false);
+                                  },
+                                  borderRadius: const BorderRadius.all(Radius.circular(8)),
+                                  child: Container(
+                                    width: double.infinity,
+                                    height: 48,
+                                    alignment: Alignment.center,
+                                    decoration: const BoxDecoration(
+                                      color: AppColors.primaryColor,
+                                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                                    ),
+                                    child: const Text(
+                                      'Sign In',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: AppColors.backgroundColor,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    pageController.animateToPage(
+                                      1,
+                                      duration: const Duration(milliseconds: 300),
+                                      curve: Curves.easeInOut,
+                                    );
+                                  },
+                                  child: const Text('Don\'t have an account?'),
+                                ),
+                              ],
                             ),
                           ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-                RadioListTile.adaptive(
-                  value: _AuthState.signIn,
-                  groupValue: authState,
-                  title: const Text(
-                    'Sign-In',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  onChanged: (val) => setState(() => authState = val ?? authState),
-                ),
-                ExpandedSection(
-                  expand: authState == _AuthState.signIn,
-                  axisAlignment: -1,
-                  child: Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: const BoxDecoration(
-                      color: AppColors.backgroundColor,
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                    ),
-                    child: Form(
-                      key: signInFormKey,
-                      child: Column(
-                        children: [
-                          CustomTextFormField(
-                            controller: emailController,
-                            focusNode: emailFocusNode,
-                            labelText: 'Email',
-                            hintText: 'Enter your email...',
-                            prefexIcon: const Icon(Icons.email_rounded),
-                            validator: validateEmail,
-                            onChanged: clickedOnce ? null : onChange,
-                          ),
-                          const SizedBox(height: 12),
-                          PasswordTextFormField(
-                            controller: passwordController,
-                            focusNode: passwordFocusNode,
-                            validator: validatePassword,
-                            onChanged: clickedOnce ? null : onChange,
-                          ),
-                          const SizedBox(height: 12),
-                          InkWell(
-                            onTap: () {
-                              if (signInFormKey.currentState?.validate() ?? false) {
-                              } else {}
-                              setState(() => clickedOnce = false);
-                            },
-                            borderRadius: const BorderRadius.all(Radius.circular(8)),
-                            child: Container(
-                              width: double.infinity,
-                              height: 48,
-                              alignment: Alignment.center,
-                              decoration: const BoxDecoration(
-                                color: AppColors.primaryColor,
-                                borderRadius: BorderRadius.all(Radius.circular(8)),
-                              ),
-                              child: const Text(
-                                'Sign In',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.backgroundColor,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Form(
+                          key: signUpFormKey,
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                const Text(
+                                  'SIGN UP',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 2,
+                                  ),
                                 ),
-                              ),
+                                const SizedBox(height: 12),
+                                CustomTextFormField(
+                                  controller: nameController,
+                                  focusNode: nameFocusNode,
+                                  labelText: 'Username',
+                                  hintText: 'Enter your name...',
+                                  prefexIcon: const Icon(Icons.person_rounded),
+                                  validator: validateUsername,
+                                  onChanged: clickedOnce ? null : onChange,
+                                ),
+                                const SizedBox(height: 12),
+                                CustomTextFormField(
+                                  controller: emailController,
+                                  focusNode: emailFocusNode,
+                                  labelText: 'Email',
+                                  hintText: 'Enter your email...',
+                                  prefexIcon: const Icon(Icons.email_rounded),
+                                  validator: validateEmail,
+                                  onChanged: clickedOnce ? null : onChange,
+                                ),
+                                const SizedBox(height: 12),
+                                PasswordTextFormField(
+                                  controller: passwordController,
+                                  focusNode: passwordFocusNode,
+                                  validator: validatePassword,
+                                  onChanged: clickedOnce ? null : onChange,
+                                ),
+                                const SizedBox(height: 12),
+                                InkWell(
+                                  onTap: () {
+                                    if (signUpFormKey.currentState?.validate() ?? false) {
+                                    } else {}
+                                    setState(() => clickedOnce = false);
+                                  },
+                                  borderRadius: const BorderRadius.all(Radius.circular(8)),
+                                  child: Container(
+                                    width: double.infinity,
+                                    height: 48,
+                                    alignment: Alignment.center,
+                                    decoration: const BoxDecoration(
+                                      color: AppColors.primaryColor,
+                                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                                    ),
+                                    child: const Text(
+                                      'Sign Up',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: AppColors.backgroundColor,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    pageController.animateToPage(
+                                      0,
+                                      duration: const Duration(milliseconds: 300),
+                                      curve: Curves.easeInOut,
+                                    );
+                                  },
+                                  child: const Text('Already have an account?'),
+                                ),
+                              ],
                             ),
                           ),
-                        ],
+                        ),
                       ),
-                    ),
+                    ],
                   ),
                 ),
               ],
             ),
-          ),
+          ],
         ),
       ),
     );
