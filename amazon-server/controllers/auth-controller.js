@@ -27,6 +27,7 @@ module.exports.signUp = async (req, res) => {
             data: {
                 user,
                 accessToken,
+                expiresIn: process.env.EXPIRES_IN,
             },
         });
 
@@ -70,6 +71,7 @@ module.exports.signIn = async (req, res) => {
             data: {
                 user,
                 accessToken,
+                expiresIn: process.env.EXPIRES_IN,
             },
         });
     } catch (error) {
