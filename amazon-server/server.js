@@ -1,14 +1,14 @@
 const app = require('./app');
-const mongoose = require('mongoose');
+const initDatabase = require('./db-init');
 
-mongoose.connect().then(() => {
-    console.log('Database connection established successfully');
-}).catch((e) => {
-    console.log('Error while establishing connection with the database');
-    console.log(e);
-});
+// Load environment variables
+require('dotenv').config();
 
-const PORT = 3000;
-app.listen(PORT, '127.0.0.1', () => {
-    console.log('Server listening on port ' + PORT);
+const databaseUrl = process.env.DATABASE_URL;
+
+initDatabase(databaseUrl);
+
+const port = process.env.PORT || 3000;
+app.listen(port, '127.0.0.1', () => {
+    console.log('Server listening on port ' + port);
 });
