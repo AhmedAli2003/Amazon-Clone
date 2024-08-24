@@ -34,7 +34,7 @@ const userSchema = mongoose.Schema({
         enum: ['user', 'admin'],
         default: 'user',
     },
-    createAt: {
+    createdAt: {
         type: Date,
         default: Date.now,
     },
@@ -74,6 +74,7 @@ userSchema.set('toJSON', {
     transform: function (doc, ret, options) {
         delete ret.createdAt;
         delete ret.modifiedAt;
+        delete ret.password;
         return ret;
     }
 });

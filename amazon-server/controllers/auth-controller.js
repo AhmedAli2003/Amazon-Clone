@@ -2,9 +2,9 @@ const User = require('../models/user');
 
 module.exports.signUp = async (req, res) => {
     try {
-        const { username, email, password } = req.body;
-        if (!username) {
-            throw Error('Username must be provided');
+        const { name, email, password } = req.body;
+        if (!name) {
+            throw Error('name must be provided');
         }
         if (!email) {
             throw Error('Email must be provided');
@@ -18,7 +18,7 @@ module.exports.signUp = async (req, res) => {
             throw Error('Email already exists');
         }
 
-        const user = await User.create({ username, email, password });
+        const user = await User.create({ name, email, password });
 
         const accessToken = user.generateAuthToken();
 
@@ -56,17 +56,13 @@ module.exports.signIn = async (req, res) => {
         }
 
         // Validate the password
-        const isMatch = await bcrypt.compare(password, user.password);
+        const isMatch = await user.comparePassword(password);
         if (!isMatch) {
             return res.status(400).json({ message: 'Invalid email or password.' });
         }
 
         // Generate JWT token
-        const accessToken = jwt.sign(
-            { _id: user._id, email: user.email },
-            process.env.JWT_SECRET,
-            { expiresIn: '1000d' } // Set expiration to 1000 days
-        );
+        const accessToken = user.generateAuthToken();
 
         // Return the token and user information
         res.status(200).json({
