@@ -33,7 +33,7 @@ class AuthRepo {
         return (null, response);
       }
       throw Exception();
-    } catch (e) {
+    } catch (e, _) {
       return (Failure.fromException(e), null);
     }
   }

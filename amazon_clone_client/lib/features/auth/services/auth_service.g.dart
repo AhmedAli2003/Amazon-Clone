@@ -14,7 +14,7 @@ class _AuthService implements AuthService {
     this.baseUrl,
     this.errorLogger,
   }) {
-    baseUrl ??= 'http://10.0.0.4:3000/api/v1/auth/';
+    baseUrl ??= 'http://10.0.2.2:3000/api/v1/auth/';
   }
 
   final Dio _dio;

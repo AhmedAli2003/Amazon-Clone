@@ -3,6 +3,9 @@ const User = require('../models/user');
 module.exports.signUp = async (req, res) => {
     try {
         const { name, email, password } = req.body;
+        console.log('Hello');
+        console.log(name);
+        
         if (!name) {
             throw Error('name must be provided');
         }
@@ -24,11 +27,9 @@ module.exports.signUp = async (req, res) => {
 
         res.status(201).json({
             success: true,
-            data: {
-                user,
-                accessToken,
-                expiresIn: process.env.EXPIRES_IN,
-            },
+            accessToken,
+            expiresIn: process.env.EXPIRES_IN,
+            data: user,
         });
 
     } catch (error) {
@@ -68,11 +69,9 @@ module.exports.signIn = async (req, res) => {
         // Return the token and user information
         res.status(200).json({
             success: true,
-            data: {
-                user,
-                accessToken,
-                expiresIn: process.env.EXPIRES_IN,
-            },
+            accessToken,
+            expiresIn: process.env.EXPIRES_IN,
+            data: user,
         });
     } catch (error) {
         res.status(400).json({

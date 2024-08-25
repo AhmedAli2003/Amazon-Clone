@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/theme/app_colors.dart';
+import '../controllers/auth_controller.dart';
 import 'auth_button_text.dart';
 
-class AuthButton extends StatelessWidget {
+class AuthButton extends ConsumerWidget {
   final VoidCallback onTap;
   final String text;
   const AuthButton({
@@ -13,9 +15,10 @@ class AuthButton extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final loading = ref.watch(authLoadingProvider);
     return InkWell(
-      onTap: onTap,
+      onTap: loading ? null : onTap,
       borderRadius: const BorderRadius.all(Radius.circular(8)),
       child: Container(
         width: double.infinity,
@@ -25,7 +28,11 @@ class AuthButton extends StatelessWidget {
           color: AppColors.primaryColor,
           borderRadius: BorderRadius.all(Radius.circular(8)),
         ),
-        child: AuthButtonText(text),
+        child: loading
+            ? const CircularProgressIndicator(
+                color: AppColors.backgroundColor,
+              )
+            : AuthButtonText(text),
       ),
     );
   }

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/common/functions/validators.dart';
 import '../../../app/common/widgets/custom_text_form_field.dart';
+import '../../../app/models/sign_in_request.dart';
 import '../../../app/models/sign_up_request.dart';
 import '../../../app/theme/app_colors.dart';
 import '../controllers/auth_controller.dart';
@@ -194,6 +195,13 @@ class _AuthFormState extends ConsumerState<AuthForm> {
   void signIn() {
     if (signInFormKey.currentState?.validate() ?? false) {
       globalNode.unfocus();
+            ref.read(authControllerProvider).signIn(
+            request: SignInRequest(
+              email: emailController.text.trim(),
+              password: passwordController.text.trim(),
+            ),
+            context: context,
+          );
     }
 
     setState(() => clickedOnce = false);
