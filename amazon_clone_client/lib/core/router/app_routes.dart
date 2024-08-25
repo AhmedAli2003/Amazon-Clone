@@ -1,6 +1,8 @@
 enum AppRoutes {
   auth('/auth'),
-  home('/home');
+  home('/home'),
+  splash('/splash'),;
+
   final String path;
 
   const AppRoutes(this.path);

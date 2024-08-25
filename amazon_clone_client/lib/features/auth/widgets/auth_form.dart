@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../app/common/functions/validators.dart';
-import '../../../app/common/widgets/custom_text_form_field.dart';
-import '../../../app/models/sign_in_request.dart';
-import '../../../app/models/sign_up_request.dart';
-import '../../../app/theme/app_colors.dart';
+import '../../../core/common/functions/validators.dart';
+import '../../../core/common/widgets/custom_text_form_field.dart';
+import '../../../core/models/sign_in_request.dart';
+import '../../../core/models/sign_up_request.dart';
+import '../../../core/theme/app_colors.dart';
 import '../controllers/auth_controller.dart';
 import 'auth_button.dart';
 import 'auth_title.dart';

@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../app/common/utils/ui_functions.dart';
-import '../../../app/models/sign_in_request.dart';
-import '../../../app/models/sign_up_request.dart';
-import '../../../app/models/user.dart';
-import '../../../app/router/app_routes.dart';
+import '../../../core/common/utils/ui_functions.dart';
+import '../../../core/models/sign_in_request.dart';
+import '../../../core/models/sign_up_request.dart';
+import '../../../core/models/user.dart';
+import '../../../core/router/app_routes.dart';
 import '../repos/auth_repo.dart';
 
 final authControllerProvider = Provider<AuthController>(
@@ -44,7 +44,6 @@ class AuthController {
     }
   }
 
-  
   Future<void> signIn({
     required SignInRequest request,
     required BuildContext context,
@@ -63,5 +62,4 @@ class AuthController {
       GoRouter.of(context).goNamed(AppRoutes.home.name);
     }
   }
-
 }

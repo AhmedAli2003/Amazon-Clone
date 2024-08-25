@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../app/theme/app_colors.dart';
+import '../../../core/theme/app_colors.dart';
 import '../controllers/auth_controller.dart';
 import 'auth_button_text.dart';
 

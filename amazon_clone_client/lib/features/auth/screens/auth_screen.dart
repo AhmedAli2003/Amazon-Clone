@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../app/theme/app_colors.dart';
+import '../../../core/theme/app_colors.dart';
 import '../widgets/auth_background.dart';
 import '../widgets/auth_form.dart';
 

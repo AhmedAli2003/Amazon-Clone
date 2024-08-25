@@ -2,11 +2,13 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:retrofit/retrofit.dart';
 
-import '../../../app/common/utils/dio_provider.dart';
-import '../../../app/constants/app_urls.dart';
-import '../../../app/models/auth_response.dart';
-import '../../../app/models/sign_in_request.dart';
-import '../../../app/models/sign_up_request.dart';
+import '../../../core/common/utils/dio_provider.dart';
+import '../../../core/constants/app_urls.dart';
+import '../../../core/models/api_response.dart';
+import '../../../core/models/auth_response.dart';
+import '../../../core/models/empty.dart';
+import '../../../core/models/sign_in_request.dart';
+import '../../../core/models/sign_up_request.dart';
 
 part 'auth_service.g.dart';
 
@@ -23,4 +25,7 @@ abstract class AuthService {
 
   @POST(AppUrls.signInPath)
   Future<AuthResponse> signIn(@Body() SignInRequest signUpRequest);
+
+  @POST(AppUrls.checkAccessTokenPath)
+  Future<ApiResponse<Empty>> checkAccessToken(@Header(AppUrls.authorization) accessToken);
 }

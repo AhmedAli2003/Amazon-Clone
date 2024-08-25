@@ -1,12 +1,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../app/common/utils/internet_checker.dart';
-import '../../../app/common/utils/shared_preferences_manager.dart';
-import '../../../app/errors/exception.dart';
-import '../../../app/errors/failure.dart';
-import '../../../app/models/auth_response.dart';
-import '../../../app/models/sign_in_request.dart';
-import '../../../app/models/sign_up_request.dart';
+import '../../../core/common/utils/internet_checker.dart';
+import '../../../core/common/utils/shared_preferences_manager.dart';
+import '../../../core/errors/exception.dart';
+import '../../../core/errors/failure.dart';
+import '../../../core/models/api_response.dart';
+import '../../../core/models/auth_response.dart';
+import '../../../core/models/empty.dart';
+import '../../../core/models/sign_in_request.dart';
+import '../../../core/models/sign_up_request.dart';
 import '../services/auth_service.dart';
 
 final authRepoProvider = Provider<AuthRepo>(
@@ -24,7 +26,7 @@ class AuthRepo {
   Future<(Failure?, AuthResponse?)> signUp(SignUpRequest signUpRequest) async {
     try {
       if (!(await ref.read(internetCheckerProvider).hasConnection)) {
-        throw NoInternetException();
+        throw const NoInternetException();
       }
       final response = await authService.signUp(signUpRequest);
       if (response.success) {
@@ -33,7 +35,7 @@ class AuthRepo {
         return (null, response);
       }
       throw Exception();
-    } catch (e, _) {
+    } catch (e) {
       return (Failure.fromException(e), null);
     }
   }
@@ -41,7 +43,7 @@ class AuthRepo {
   Future<(Failure?, AuthResponse?)> signIn(SignInRequest signInRequest) async {
     try {
       if (!(await ref.read(internetCheckerProvider).hasConnection)) {
-        throw NoInternetException();
+        throw const NoInternetException();
       }
       final response = await authService.signIn(signInRequest);
       if (response.success) {
@@ -50,6 +52,26 @@ class AuthRepo {
         return (null, response);
       }
       throw Exception();
+    } catch (e) {
+      return (Failure.fromException(e), null);
+    }
+  }
+
+  Future<(Failure?, ApiResponse<Empty>?)> checkAccessToken() async {
+    try {
+      final accessToken = ref.read(sharedPreferencesManagerProvider).getAccessToken();
+      if (accessToken == null || accessToken.isEmpty) {
+        throw const AccessTokenIsNotStoredException();
+      }
+      if (!(await ref.read(internetCheckerProvider).hasConnection)) {
+        throw const NoInternetException();
+      }
+      final bearerAccessToken = 'Bearer $accessToken';
+      final response = await ref.read(authServiceProvider).checkAccessToken(bearerAccessToken);
+      if (!response.success) {
+        throw const InvalidAccessTokenException();
+      }
+      return (null, response);
     } catch (e) {
       return (Failure.fromException(e), null);
     }

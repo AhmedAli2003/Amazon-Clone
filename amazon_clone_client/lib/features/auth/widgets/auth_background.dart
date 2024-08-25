@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../app/constants/app_assets.dart';
+import '../../../core/constants/app_assets.dart';
 
 class AuthBackground extends StatelessWidget {
   const AuthBackground({super.key});

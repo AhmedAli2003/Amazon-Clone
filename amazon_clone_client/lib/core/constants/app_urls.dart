@@ -5,4 +5,7 @@ class AppUrls {
   static const authUrl = '$baseUrl/auth/';
   static const signUpPath = 'sign-up';
   static const signInPath = 'sign-in';
+  static const checkAccessTokenPath = 'check-access-token';
+
+  static const String authorization = 'authorization';
 }
