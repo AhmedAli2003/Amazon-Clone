@@ -1,7 +1,7 @@
 class AppUrls {
   const AppUrls._();
 
-  static const baseUrl = 'http://10.0.2.2:3000/api/v1';
+  static const baseUrl = 'http://10.0.0.13:3000/api/v1';
   static const authUrl = '$baseUrl/auth/';
   static const signUpPath = 'sign-up';
   static const signInPath = 'sign-in';

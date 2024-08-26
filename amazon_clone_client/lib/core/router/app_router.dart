@@ -41,7 +41,7 @@ class AppRouter {
             TransitionDetails(
               transition: Transitions.slideLeftToRight,
               page: const AuthScreen(),
-              duration: const Duration(milliseconds: 1000),
+              duration: const Duration(milliseconds: 2000),
               name: AppRoutes.auth.name,
               context: context,
               state: state,
@@ -58,7 +58,7 @@ class AppRouter {
               context: context,
               page: const HomeScreen(),
               transition: Transitions.slideLeftToRight,
-              duration: const Duration(milliseconds: 1000),
+              duration: const Duration(milliseconds: 2000),
               name: AppRoutes.home.name,
               state: state,
             ),

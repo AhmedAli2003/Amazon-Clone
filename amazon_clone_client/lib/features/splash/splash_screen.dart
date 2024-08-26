@@ -22,7 +22,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    timer = Timer(const Duration(milliseconds: 1000), () {
+    timer = Timer(const Duration(milliseconds: 100), () {
       setState(() {
         a = !a;
       });
@@ -45,7 +45,18 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         }
       } else {
         Future.delayed(Duration(milliseconds: 1200 - milliseconds), () {
-          GoRouter.of(context).goNamed(AppRoutes.home.name);
+          if (response.$1 != null) {
+            final failure = response.$1!;
+            debugPrint(failure.toString());
+            if (failure.code < 1) {
+              GoRouter.of(context).goNamed(AppRoutes.auth.name);
+            } else {
+              showSnackBar(context, failure.message);
+              GoRouter.of(context).goNamed(AppRoutes.auth.name);
+            }
+          } else {
+            GoRouter.of(context).goNamed(AppRoutes.home.name);
+          }
         });
       }
     });
@@ -61,9 +72,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.sizeOf(context).height;
     double width = MediaQuery.sizeOf(context).width;
-
     return Scaffold(
       backgroundColor: Colors.black,
       body: Stack(
@@ -72,7 +81,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
             duration: const Duration(milliseconds: 1200),
             curve: Curves.fastLinearToSlowEaseIn,
             width: a ? width : 0,
-            height: height,
+            height: double.infinity,
             color: Colors.white,
           ),
           Center(
